@@ -9,7 +9,22 @@ use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *  itemOperations = {
+ *      "put",
+ *      "delete",
+ *      "get" = {
+ *          "normalization_context"={"groups"="read:invoice:item"}
+ *      }
+ *  },
+ *  collectionOperations = {
+ *      "post",
+ *      "get" = {
+ *          "normalization_context"={"groups"="read:invoice:collection"}
+ *      }
+ *  }
+ * )
+ * @ApiFilter(DateFilter::class, properties={"sendingAt"})
  */
 class Invoice
 {
@@ -17,31 +32,54 @@ class Invoice
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *  @Groups({"read:customer:item",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"read:customer:item",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $amount;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"read:customer:item",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"read:customer:item",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $endingAt;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"read:customer:item",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $statut;
 
     /**
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="invoices")
+     * @Groups({"read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $customer;
 

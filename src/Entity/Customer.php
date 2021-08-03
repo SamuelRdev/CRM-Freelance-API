@@ -7,47 +7,99 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *  itemOperations = {
+ *      "put",
+ *      "delete",
+ *      "GET" = {
+ *          "normalization_context"={"groups"="read:customer:item"}
+ *      }
+ *  },
+ *  collectionOperations = {
+ *      "post",
+ *      "GET" = {
+ *          "normalization_context"={"groups"="read:customer:collection"}
+ *      }
+ *  }
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"companyName","firstName","lastName"})
  */
 class Customer
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer") 
+     * @Groups({
+     *  "read:customer:item",
+     *  "read:customer:collection",
+     *  "read:invoice:collection",
+     *  "read:invoice:item"
+     * })
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     * "read:customer:item",
+     * "read:invoice:item"
+     * }) 
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     * "read:customer:item",
+     * "read:invoice:item"
+     * })
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     * "read:customer:item",
+     * "read:customer:collection",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     * "read:customer:item",
+     * "read:customer:collection",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $lastName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     * "read:customer:item",
+     * "read:customer:collection",
+     * "read:invoice:collection",
+     * "read:invoice:item"
+     * })
      */
     private $companyName;
 
     /**
      * @ORM\OneToMany(targetEntity=Invoice::class, mappedBy="customer")
+     * @Groups({
+     * "read:customer:item",
+     * "read:customer:collection",
+     * })
      */
     private $invoices;
 
